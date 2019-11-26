@@ -1,0 +1,4 @@
+﻿  Source.cpp
+C:\Users\leushkin.IMC\source\repos\laba4\Source.cpp(32,21): warning C4018:  <: несоответствие типов со знаком и без знака
+C:\Users\leushkin.IMC\source\repos\laba4\Source.cpp(36,17): warning C4018:  <: несоответствие типов со знаком и без знака
+  laba4.vcxproj -> C:\Users\leushkin.IMC\source\repos\laba4\Debug\laba4.exe

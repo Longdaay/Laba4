@@ -1,0 +1,4 @@
+﻿  Source.cpp
+C:\Users\leushkin.IMC\source\repos\laba4\Source.cpp(88,26): warning C4267:  инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\leushkin.IMC\source\repos\laba4\Source.cpp(92,24): warning C4267:  =: преобразование из "size_t" в "int"; возможна потеря данных
+  laba4.vcxproj -> C:\Users\leushkin.IMC\source\repos\laba4\x64\Debug\laba4.exe
