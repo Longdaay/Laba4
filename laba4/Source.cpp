@@ -1,19 +1,28 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <Windows.h>
-#include <ctype.h>
-#include <fstream>
+//Лабораторная работа №4 - работа со строковыми данными
+// Задачи:
+// 1. Осуществить ввод строк как вручную, так и с файла
+// 2. Введенную строку "отрезать" до точки "."
+// 3. Произвести обработку строки - убрать лишние знаки препинания, изменить регистр букв в строке
+// 4. (по варианту) Вывести слова, разделив их, в зависимости от количества, на три или на 2 колонки и выровнить "по правому краю" 
 
-using namespace std;
+#include <iostream> // ввод/вывод в консоль
+#include <string> // для строк
+#include <vector> // для массива данных
+#include <Windows.h> // для правильной локализации
+#include <ctype.h> // для изменения регистра
+#include <fstream> // для ввода/вывода в файл данных
 
-string s1, s2;
-vector<string> vec;
+using namespace std; // пространство имен std
+
+string s1, s2; // инициализация строк для ввода
+vector<string> vec; // вектор для отображения слов по колонкам
+ofstream fout; // объявление переменной потока вывода
 
 int checkparam() // функция проверки выбранного действия
 {
 	int par;
 	char value[256]; // переменная, которая хранит выбранное значение
+
 	cin >> value; // вводим выбранное значение 
 	if (strlen(value) == 1) // проверяем количество введенных символов. Если много, то просим ввести еще раз, иначе проверям дальше
 	{
@@ -40,29 +49,59 @@ int checkparam() // функция проверки выбранного действия
 	}
 }
 
-void fill_str()
+void fill_str() // ручной ввод строки
 {
+	fout.open("data.txt"); // открываем файл, в который будем записывать
+	fout << "Введенная строка - "; // записываем в файл
 	cout << "Введите строку: " << endl;
-	s1.clear();
-	s2.clear();
-	while (s2.find('.') == -1)
+	s1.clear(); // очищаем 
+	s2.clear(); // строки
+	vec.clear(); // и массив
+	while (s2.find('.') == -1) // пока не находим точку в тексте продолжаем просить вводить строку
 	{
-		getline(cin, s2);
-		s1 += s2;
+		getline(cin, s2); // пользователь вводит строку
+		s1 += s2; // добавляем в строку каждый кусок строки
+		fout << s1; // записываем эти куски в файл
 	}
-	s1.erase(s1.find('.') + 1);
+	s1.erase(s1.find('.') + 1); // удаляем из строки лишние символы после точки
+	fout << '\n';
+	fout << "Строка до точки - ";
+	fout << s1;
+	fout << '\n';
+	fout.close();// закрываем файл
 }
 
-void fill_str_via_file()
+void fill_str_via_file() // ввод через файл
 {
+	ifstream fin; // инициализируем переменную потока ввода
+	char nil = '\n'; // символ переноса строки
 
+	s1.clear(); // очищаем
+	s2.clear(); // строки
+	vec.clear(); // и массив
+	fin.open("input.txt"); // открываем файл, с которого будем считывать
+	fout.open("data.txt"); // открываем файл, в который будем записывать
+	fout << "Введенная строка - ";
+
+	getline(fin, s1, nil); // считываем все строки с файла
+	fout << s1; // считываем все строки в переменную
+
+	s1.erase(s1.find('.') + 1); // удаляем из строки лишние символы после точки
+	fin.close(); // закрываем файл, с которого считывали
+
+	fout << '\n';
+	fout << "Строка до точки - ";
+	fout << s1;
+	fout << '\n';
+	fout.close(); // закрываем файл, в который записывали
 }
 
-void choosefill() // функция выбора заполнения матрицы
+void choosefill() // функция выбора ввода строки
 {
 	int m;
 	unsigned int mat_n;
 	char value[256]; // переменная, которая хранит выбранное значение
+
 	cin >> value; // считываем выбранное значение
 	if (strlen(value) == 1) // проверяем количество введенных символов. Если много, то просим ввести еще раз, иначе проверям дальше
 	{
@@ -88,17 +127,18 @@ void choosefill() // функция выбора заполнения матрицы
 	}
 }
 
-void check_ch()
+void check_ch() // функция на обработку от лишних знаков
 {
-	string s3 = ",/][;:()?!_- ";
-	int count = 0;
+	string s3 = ",/][;:()?!_- "; // строка с символами, которые необходимо проверить
+	int count = 0; 
 	int index = 0;
+	fout.open("data.txt", ios::app); // открываем файл, в который будем записывать. ios::app - ввод данных в конец файла
 
 	for (int i = 0; i < s3.size(); i++)
 	{
 		index = 0;
 		count = 0;
-		while (index < s1.size())
+		while (index < s1.size()) // проверка схожа на GnomeSort
 		{
 			if (s1[index] != s3[i])
 			{
@@ -116,72 +156,101 @@ void check_ch()
 			index++;
 		}
 	}
+	fout << "Строка без лишних знаков - ";
+	fout << s1;
+	fout << '\n';
+	fout.close(); // Закрываем файл
 }
 
-void check_reg()
+void check_reg() // функция на обработку регистра букв в строке
 {
-	for (int i = 0; i < s1.size(); i++)
+	fout.open("data.txt", ios::app); // открываем файл, в который будем записывать. ios::app - ввод данных в конец файла
+
+	for (int i = 0; i < s1.size(); i++) 
 	{
 		if (i != 0)
 		{
 			s1[i] = tolower(s1[i]);
 			cout << s1[i];
 		}
-		else
+		else // первая буква строчная
 		{
 			s1[i] = toupper(s1[i]);
 			cout << s1[i];
 		}
 	}
 	cout << endl;
+	fout << "Строка с регистром \" Как в предложениях \" - ";
+	fout << s1;
+	fout << '\n' << '\n';
+	fout << "Исправленная строка - ";
+	fout << s1;
+	fout << '\n' << '\n';
+
+	fout.close(); // Закрываем файл
 }
 
-void print_str_col()
+void print_str_col() // функция вывода колонками
 {
 	int index = 0;
 	int count = 0;
-	s2 = s1;
-	index = 0;
+	int collumn;
+	int max;
+
+	s2 = s1; // заносим копия s1 в s2
+	fout.open("data.txt", ios::app); // открываем файл, в который будем записывать. ios::app - ввод данных в конец файла
+	fout << "Задание по варианту - вывести слова по колонкам (2 или 3 колонки)\n";
 	while (index < s1.size())
 	{
 		if (s1[index] == ' ' or s1[index] == '.')
 		{
 			s2.erase(0, index + 1);
-			vec.push_back(s1.erase(index));
+			vec.push_back(s1.erase(index)); // одно слово - один элемент
 			index = -1;
 		}
 		index++;
 		s1 = s2;
 	}
-	vec[vec.size() - 1] = vec[vec.size() - 1] + '.';
-	count = 0;
-	int max = vec[0].size();
+	vec[vec.size() - 1] = vec[vec.size() - 1] + '.'; // добавляем точку в конце
+
+	//поиск наиболее длинного слова
+	max = vec[0].size(); // присваеваем максимальному значению длину первого слова
 	for (int i = 0; i < vec.size(); i++)
 	{
 		if (vec[i].size() > max)
 			max = vec[i].size();
 	}
+	
+	if (vec.size() > 10) // если слов больше 10, выводим в 3 колонки
+		collumn = 3;
+	else				// иначе в 2
+		collumn = 2;
+
 	for (int i = 0; i < vec.size(); i++)
 	{
-		cout.width(max);
-		cout << right << vec[i] << "| " << '\t';
+		cout.width(max); // объявляем ширину выводу
+		fout.width(max); // объявляем ширину выводу
+		cout << right << vec[i] << "| " << '\t'; // выводим по правому выравниванию табуляцией
+		fout << right << vec[i] << "| " << '\t'; // выводим по правому выравниванию табуляцией
 		count++;
-		if (count == 3)
+		if (count == collumn)
 		{
-			cout << right << endl;
+			cout << right << endl; // выводим на новую строку
+			fout << right << '\n'; // выводим на новую строку
 			count = 0;
 		}
 	}
+	fout.close(); // Закрываем файл
 }
 
 int main()
 {
 	bool par = true;
-	setlocale(0, "");
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
+	setlocale(0, ""); // локализация
+	SetConsoleCP(1251); // локализация ввода строки
+	SetConsoleOutputCP(1251); // локализация вывода строки
 
-	while (par == 1)
+	while (par == 1) // зацикливаем
 	{
 		cout << "Как вы хотите ввести строку:" << endl;
 		cout << "1 - Ввести строку вручную" << endl;
@@ -195,7 +264,6 @@ int main()
 		check_reg();
 		print_str_col();
 		
-
 		cout << endl << "Хотите продолжить? (y/n)";
 		par = checkparam();
 	}
