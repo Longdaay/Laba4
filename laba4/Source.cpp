@@ -13,10 +13,17 @@
 #include <fstream> // для ввода/вывода в файл данных
 
 using namespace std; // пространство имен std
+const int NotUsed = system("color 70");
 
 string s1, s2; // инициализация строк для ввода
 vector<string> vec; // вектор для отображения слов по колонкам
 ofstream fout; // объявление переменной потока вывода
+
+void SetColor(int text, int bg) //Функция смены цвета, взятая из Интернета
+{
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hStdOut, (WORD)((bg << 4) | text));
+}
 
 int checkparam() // функция проверки выбранного действия
 {
@@ -85,7 +92,7 @@ void fill_str_via_file() // ввод через файл
 
 	getline(fin, s1, nil); // считываем все строки с файла
 	fout << s1; // считываем все строки в переменную
-
+	cout << "Полученная строка из файла - " << s1 << endl << endl;
 	s1.erase(s1.find('.') + 1); // удаляем из строки лишние символы после точки
 	fin.close(); // закрываем файл, с которого считывали
 
